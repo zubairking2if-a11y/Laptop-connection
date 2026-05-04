@@ -1,4 +1,5 @@
 import socket
+import os
 
 host = "0.0.0.0"
 port = 5000
@@ -7,16 +8,23 @@ server = socket.socket()
 server.bind((host, port))
 server.listen(1)
 
-print("Waiting for connection...")
+print("Server running... Waiting for connection")
 
-conn, addr = server.accept()
-print("Connected by:", addr)
+while True:
+    conn, addr = server.accept()
+    print("Connected:", addr)
 
-data = conn.recv(1024).decode()
-print("Received command:", data)
+    data = conn.recv(1024).decode().strip()
+    print("Command:", data)
 
-# SAFE: just display, not execute
-if data == "open_calculator":
-    print("Command received to open calculator (not executing for safety)")
+    # ✅ SAFE COMMAND LIST
+    if data == "open_notepad":
+        os.system("notepad")   # Windows only
 
-conn.close()
+    elif data == "show_message":
+        print("Hello from mobile!")
+
+    else:
+        print("❌ Unknown or blocked command")
+
+    conn.close()
